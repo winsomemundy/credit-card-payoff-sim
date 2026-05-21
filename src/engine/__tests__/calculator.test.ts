@@ -112,6 +112,25 @@ describe('runSimulation — single-payment payoff', () => {
     expect(result.schedule[0].endingBalance).toBe(0)
     expect(result.schedule[0].milestone).toBe('100%')
   })
+
+  it('all milestone dates are defined even when a single payment clears the balance', () => {
+    const result = runSimulation(makeParams({ startingBalance: 100, monthlyPayment: 200 }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.milestones['25%'].date).toBeDefined()
+    expect(result.milestones['50%'].date).toBeDefined()
+    expect(result.milestones['75%'].date).toBeDefined()
+    expect(result.milestones['100%'].date).toBeDefined()
+  })
+
+  it('backfilled milestone dates equal the single payment date', () => {
+    const result = runSimulation(makeParams({ startingBalance: 100, monthlyPayment: 200 }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    const paymentDate = result.schedule[0].paymentDate
+    expect(result.milestones['25%'].date).toEqual(paymentDate)
+    expect(result.milestones['50%'].date).toEqual(paymentDate)
+    expect(result.milestones['75%'].date).toEqual(paymentDate)
+    expect(result.milestones['100%'].date).toEqual(paymentDate)
+  })
 })
 
 describe('runSimulation — fixed_months mode', () => {

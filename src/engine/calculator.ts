@@ -7,6 +7,8 @@ import { deriveMonthlyPayment } from './amortization'
 import { firstPaymentDate, nextPaymentDate } from './dates'
 
 export const SAFETY_CAP = 600
+export const MIN_PAYMENT_FLOOR = 25     // minimum payment floor ($)
+export const MIN_PAYMENT_RATE = 0.02    // 2% of balance minimum payment rate
 
 function roundHalfUp(value: number): number {
   return Math.round(value * 100) / 100
@@ -30,6 +32,10 @@ function checkMilestone(
   if (!state.hit100 && isLastRow) {
     state.hit100 = true
     state.date100 = paymentDate
+    // Backfill any un-hit lower milestones so their dates are never undefined
+    if (!state.hit75) { state.hit75 = true; state.date75 = paymentDate; }
+    if (!state.hit50) { state.hit50 = true; state.date50 = paymentDate; state.joint50 = state.joint50 ?? '100%' }
+    if (!state.hit25) { state.hit25 = true; state.date25 = paymentDate; state.joint25 = state.joint25 ?? '100%' }
     return '100%'
   }
   if (!state.hit75 && cumulativePrincipal >= state.threshold75) {
@@ -62,7 +68,7 @@ function runBaselineSimulation(params: SimulationParams): {
     month++
     const interest = roundHalfUp(balance * monthlyRate)
     const balanceAfter = balance + interest + params.newMonthlyCharges
-    const minPayment = Math.max(25, roundHalfUp(balanceAfter * 0.02))
+    const minPayment = Math.max(MIN_PAYMENT_FLOOR, roundHalfUp(balanceAfter * MIN_PAYMENT_RATE))
     const actualPayment = Math.min(minPayment, balanceAfter)
     totalInterest += Math.min(actualPayment, interest)
     balance = balanceAfter - actualPayment

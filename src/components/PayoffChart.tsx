@@ -65,8 +65,8 @@ export function PayoffChart({ result }: Props) {
         aria-label="Balance over time chart"
       >
         {/* Grid lines and Y labels */}
-        {yLabels.map(({ y, label, dashed }) => (
-          <g key={label}>
+        {yLabels.map(({ y, label, dashed }, i) => (
+          <g key={i}>
             <line
               x1={PAD_L} y1={y} x2={CHART_W} y2={y}
               stroke="#D3D1C7" strokeWidth={0.5}

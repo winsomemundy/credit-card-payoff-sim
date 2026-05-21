@@ -4,7 +4,7 @@ import { formatCurrency } from '../utils/format'
 interface Props { result: SimulationResult }
 
 export function InterestSavedCallout({ result }: Props) {
-  if (!result.interestSaved || result.interestSaved <= 0) return null
+  if (!result.interestSaved) return null
 
   const cap = result.baselineHitSafetyCap
   const saved = formatCurrency(result.interestSaved)
