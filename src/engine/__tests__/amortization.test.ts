@@ -30,4 +30,12 @@ describe('deriveMonthlyPayment', () => {
     const result = deriveMonthlyPayment(5000, 0.015, 36, 0)
     expect(result.lowPaymentWarning).toBe(false)
   })
+
+  it('ceils derived payment to nearest cent to prevent interest rounding drift', () => {
+    // $3500 / 18% APR / 36 months / $100 new charges
+    // Raw formula: 226.53338... — without ceiling the simulator ran 37 months instead of 36
+    // because per-cycle interest rounding accumulated +$0.013832 drift over 36 months
+    const result = deriveMonthlyPayment(3500, 0.015, 36, 100)
+    expect(result.payment).toBe(226.54)
+  })
 })

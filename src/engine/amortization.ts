@@ -20,8 +20,12 @@ export function deriveMonthlyPayment(
     payment = startingBalance * factor + newMonthlyCharges
   }
 
+  // Round UP to nearest cent to prevent per-cycle interest rounding from
+  // accumulating drift that would add an extra month in fixed_months mode.
+  const ceiledPayment = Math.ceil(payment * 100) / 100
+
   return {
-    payment,
+    payment: ceiledPayment,
     lowPaymentWarning: payment < 25,
   }
 }
