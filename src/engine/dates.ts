@@ -20,10 +20,7 @@ export function firstPaymentDate(startDate: Date, dueDayOfMonth: number): Date {
   const year = startDate.getFullYear()
   const month = startDate.getMonth()
   const day = startDate.getDate()
-  // Use current month only when the start day falls on or before the earlier of
-  // the due day and the 15th (mid-month cutoff). This ensures at least half a
-  // month's notice before the first payment.
-  if (day <= Math.min(dueDayOfMonth, 15)) {
+  if (day <= dueDayOfMonth) {
     return adjustForShortMonth(year, month, dueDayOfMonth)
   }
   const nextMonth = month === 11 ? 0 : month + 1

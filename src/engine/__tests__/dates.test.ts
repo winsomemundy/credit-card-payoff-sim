@@ -58,8 +58,12 @@ describe('firstPaymentDate', () => {
   it('does not clamp when first payment lands in a full month', () => {
     expect(firstPaymentDate(new Date(2023, 0, 5), 31)).toEqual(new Date(2023, 0, 31))
   })
-  it('clamps when advanced month is February (non-leap)', () => {
-    // Start Jan 20, due day 31 → Feb 28 (2023 non-leap)
-    expect(firstPaymentDate(new Date(2023, 0, 20), 31)).toEqual(new Date(2023, 1, 28))
+  it('stays in January when start day <= due day (even if both are large)', () => {
+    // Jan 20, due day 31: 20 <= 31 → Jan 31
+    expect(firstPaymentDate(new Date(2023, 0, 20), 31)).toEqual(new Date(2023, 0, 31))
+  })
+  it('advances and clamps when start day > due day and next month is short', () => {
+    // Jan 30, due day 29: 30 > 29 → advance to Feb → clamp 29 → Feb 28
+    expect(firstPaymentDate(new Date(2023, 0, 30), 29)).toEqual(new Date(2023, 1, 28))
   })
 })
