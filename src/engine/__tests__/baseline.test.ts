@@ -29,13 +29,15 @@ describe('interest saved vs. minimum payment', () => {
     expect(result.monthsSaved).toBeGreaterThan(0)
   })
 
-  it('spec example: saves roughly $9,000–$10,500 vs minimum on $5k/18%/$150', () => {
+  it('spec example: saves roughly $4,000–$5,200 vs minimum on $5k/18%/$150', () => {
     const result = runSimulation(makeParams())
     if (isValidationError(result)) throw new Error()
-    // Actual computed value: ~$9,705 saved (baseline hits 354 months vs 47 months for plan)
-    // The spec mockup underestimated; the engine-computed value is the authoritative figure.
-    expect(result.interestSaved!).toBeGreaterThan(9000)
-    expect(result.interestSaved!).toBeLessThan(10500)
+    // Baseline formula: max($25, 1% of balance + monthly interest) — standard US credit card minimum
+    // Baseline: ~$6,539 total interest over 222 months
+    // User plan: ~$2,028 total interest over 47 months
+    // Savings: ~$4,511 — consistent with CLAUDE.md's "~$4,312" sanity-check figure
+    expect(result.interestSaved!).toBeGreaterThan(4000)
+    expect(result.interestSaved!).toBeLessThan(5200)
   })
 
   it('interestSaved is undefined when plan payment is at or below minimum', () => {
@@ -66,14 +68,16 @@ describe('interest saved vs. minimum payment', () => {
 })
 
 describe('baseline safety-cap scenario', () => {
-  it('sets baselineHitSafetyCap to true when minimum payment cannot outpace interest', () => {
-    // APR 50%, balance $20000:
-    // monthly_rate = 4.167%, monthly_interest = ~$833
-    // min payment = max(25, 20000*0.02) = max(25, 400) = $400 < $833 → baseline never pays off
+  it('sets baselineHitSafetyCap to true when new charges cause balance to grow under minimum payments', () => {
+    // $3,500 / 18% APR / $100 new charges/month:
+    //   baseline min payment = max($25, 1% of $3,500 + $52.50) = max($25, $87.50) = $87.50
+    //   balance grows: $87.50 payment < $52.50 interest + $100 new charges = $152.50 added
+    //   net growth ≈ +$65/month → hits 600-month cap
     const result = runSimulation(makeParams({
-      startingBalance: 20000,
-      apr: 50,
-      monthlyPayment: 900, // user pays 900, valid (> ~$833 first-month interest)
+      startingBalance: 3500,
+      apr: 18,
+      monthlyPayment: 200, // user pays $200 (valid: > $52.50 first-month interest)
+      newMonthlyCharges: 100,
     }))
     if (isValidationError(result)) throw new Error()
     expect(result.baselineHitSafetyCap).toBe(true)
@@ -81,9 +85,10 @@ describe('baseline safety-cap scenario', () => {
 
   it('interestSaved is still defined when baseline hit cap', () => {
     const result = runSimulation(makeParams({
-      startingBalance: 20000,
-      apr: 50,
-      monthlyPayment: 900,
+      startingBalance: 3500,
+      apr: 18,
+      monthlyPayment: 200,
+      newMonthlyCharges: 100,
     }))
     if (isValidationError(result)) throw new Error()
     expect(result.interestSaved).toBeDefined()

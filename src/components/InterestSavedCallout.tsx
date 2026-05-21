@@ -24,16 +24,21 @@ export function InterestSavedCallout({ result }: Props) {
         <div style={{ fontSize: 13, color: '#0F6E56', marginBottom: 2 }}>
           Compared to paying the minimum
         </div>
-        <div style={{ fontSize: 16, color: '#04342C' }}>
-          You'll save{' '}
-          <strong style={{ fontWeight: 500 }}>
-            {saved}{cap ? '+' : ''} in interest
-          </strong>{' '}
-          and finish{' '}
-          <strong style={{ fontWeight: 500 }}>
-            {months}{cap ? '+' : ''} months sooner
-          </strong>.
-        </div>
+        {cap ? (
+          <div style={{ fontSize: 16, color: '#04342C' }}>
+            Under minimum payments, your ongoing charges would cause your balance to{' '}
+            <strong style={{ fontWeight: 500 }}>grow indefinitely</strong> — you'd never pay it off.
+            Your plan saves{' '}
+            <strong style={{ fontWeight: 500 }}>{saved}+ in interest</strong>.
+          </div>
+        ) : (
+          <div style={{ fontSize: 16, color: '#04342C' }}>
+            You'll save{' '}
+            <strong style={{ fontWeight: 500 }}>{saved} in interest</strong>{' '}
+            and finish{' '}
+            <strong style={{ fontWeight: 500 }}>{months} months sooner</strong>.
+          </div>
+        )}
       </div>
     </div>
   )

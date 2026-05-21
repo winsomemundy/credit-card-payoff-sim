@@ -8,7 +8,7 @@ import { firstPaymentDate, nextPaymentDate } from './dates'
 
 export const SAFETY_CAP = 600
 export const MIN_PAYMENT_FLOOR = 25     // minimum payment floor ($)
-export const MIN_PAYMENT_RATE = 0.02    // 2% of balance minimum payment rate
+export const MIN_PAYMENT_RATE = 0.01    // 1% principal component of minimum payment (+ full interest)
 
 function roundHalfUp(value: number): number {
   return Math.round(value * 100) / 100
@@ -68,7 +68,9 @@ function runBaselineSimulation(params: SimulationParams): {
     month++
     const interest = roundHalfUp(balance * monthlyRate)
     const balanceAfter = balance + interest + params.newMonthlyCharges
-    const minPayment = Math.max(MIN_PAYMENT_FLOOR, roundHalfUp(balanceAfter * MIN_PAYMENT_RATE))
+    // Standard minimum payment: 1% of current principal + full month's interest
+    // (this is how major US credit card issuers compute it)
+    const minPayment = Math.max(MIN_PAYMENT_FLOOR, roundHalfUp(balance * MIN_PAYMENT_RATE + interest))
     const actualPayment = Math.min(minPayment, balanceAfter)
     totalInterest += Math.min(actualPayment, interest)
     balance = balanceAfter - actualPayment

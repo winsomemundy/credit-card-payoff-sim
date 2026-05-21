@@ -13,7 +13,7 @@ This is a pure frontend project (no backend required). All computation runs clie
 **Core modules to implement:**
 
 - **Simulator engine** — the calculation loop (Appendix A of the spec). Keep this framework-agnostic and pure (no DOM dependencies) so it can be unit-tested independently.
-- **Minimum-payment baseline** — a second simulation run used only for the "interest saved" callout; reuses the same engine with a variable payment of `max($25, 2% × balance)`.
+- **Minimum-payment baseline** — a second simulation run used only for the "interest saved" callout; payment each cycle is `max($25, 1% of current balance + that month's interest)`. This matches how major US credit card issuers compute minimums (guaranteeing the full interest charge is covered, so the balance always declines absent new charges). When new monthly charges cause the balance to grow indefinitely the cap is hit and the callout shows a "balance grows forever" message instead of a dollar amount.
 - **UI layer** — renders inputs, schedule table, chart, and summary block.
 
 ## Calculation Rules (Critical)
