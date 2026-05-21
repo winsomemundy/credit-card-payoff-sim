@@ -153,3 +153,88 @@ describe('runSimulation — summary totals', () => {
     expect(result.totalInterestPaid).toBeCloseTo(sum, 2)
   })
 })
+
+describe('runSimulation — first payment date edge cases', () => {
+  it('uses the current month when start day < due day', () => {
+    // Start May 5, due day 15 → first payment May 15
+    const result = runSimulation(makeParams({ startDate: new Date(2026, 4, 5) }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule[0].paymentDate).toEqual(new Date(2026, 4, 15))
+  })
+
+  it('uses the current month when start day equals due day', () => {
+    // Start May 15, due day 15 → first payment May 15
+    const result = runSimulation(makeParams({ startDate: new Date(2026, 4, 15) }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule[0].paymentDate).toEqual(new Date(2026, 4, 15))
+  })
+})
+
+describe('runSimulation — short month (due day 31)', () => {
+  it('clamps Feb payment to the 28th in a non-leap year', () => {
+    // Start Jan 20, due day 31 → first payment Jan 31, second payment Feb 28
+    const result = runSimulation(makeParams({
+      startDate: new Date(2023, 0, 20),
+      dueDayOfMonth: 31,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule[0].paymentDate).toEqual(new Date(2023, 0, 31))
+    expect(result.schedule[1].paymentDate).toEqual(new Date(2023, 1, 28))
+  })
+
+  it('clamps Feb payment to the 29th in a leap year', () => {
+    const result = runSimulation(makeParams({
+      startDate: new Date(2024, 0, 20),
+      dueDayOfMonth: 31,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule[1].paymentDate).toEqual(new Date(2024, 1, 29))
+  })
+
+  it('recovers full due-day 31 in March after a clamped February', () => {
+    const result = runSimulation(makeParams({
+      startDate: new Date(2023, 0, 20),
+      dueDayOfMonth: 31,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    // schedule[0] = Jan 31, [1] = Feb 28, [2] = Mar 31
+    expect(result.schedule[2].paymentDate).toEqual(new Date(2023, 2, 31))
+  })
+})
+
+describe('runSimulation — new monthly charges', () => {
+  it('adds new charges to the balance each month (takes longer to pay off)', () => {
+    const withCharges = runSimulation(makeParams({ newMonthlyCharges: 50, monthlyPayment: 250 }))
+    const without = runSimulation(makeParams({ newMonthlyCharges: 0, monthlyPayment: 250 }))
+    if (isValidationError(withCharges) || isValidationError(without)) throw new Error()
+    expect(withCharges.totalMonths).toBeGreaterThan(without.totalMonths)
+  })
+
+  it('sets newChargesNote to true when newMonthlyCharges > 0', () => {
+    const result = runSimulation(makeParams({ newMonthlyCharges: 50, monthlyPayment: 250 }))
+    if (isValidationError(result)) throw new Error()
+    expect(result.newChargesNote).toBe(true)
+  })
+
+  it('sets newChargesNote to false when no new charges', () => {
+    const result = runSimulation(makeParams())
+    if (isValidationError(result)) throw new Error()
+    expect(result.newChargesNote).toBe(false)
+  })
+})
+
+describe('runSimulation — safety cap', () => {
+  it('schedule length is at most SAFETY_CAP rows', () => {
+    // APR 50%, balance 100000, payment just above monthly interest
+    // monthly_rate = 50/100/12 ≈ 0.04167, monthly_interest = 4166.67
+    // payment 4167.01 is just above the interest — very slow payoff
+    const result = runSimulation(makeParams({
+      startingBalance: 100000,
+      apr: 50,
+      monthlyPayment: 4167.01,
+      newMonthlyCharges: 0,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule.length).toBeLessThanOrEqual(SAFETY_CAP)
+  })
+})
