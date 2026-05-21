@@ -1,122 +1,91 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { runSimulation, isValidationError } from './engine'
+import type { SimulationParams, SimulationResult, ValidationError } from './engine/types'
+import { InputCard } from './components/InputCard'
+import { MetricStrip } from './components/MetricStrip'
+import { InterestSavedCallout } from './components/InterestSavedCallout'
+import { PayoffChart } from './components/PayoffChart'
+import { ScheduleTable } from './components/ScheduleTable'
+import { SummaryBlock } from './components/SummaryBlock'
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const [result, setResult] = useState<SimulationResult | null>(null)
+  const [error, setError] = useState<ValidationError | null>(null)
+
+  function handleSubmit(params: SimulationParams) {
+    const output = runSimulation(params)
+    if (isValidationError(output)) {
+      setError(output)
+      setResult(null)
+    } else {
+      setError(null)
+      setResult(output)
+    }
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div style={{
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      maxWidth: 760,
+      margin: '0 auto',
+      padding: '2rem 1rem',
+      color: '#2C2C2A',
+    }}>
+      {/* Header */}
+      <div style={{ marginBottom: '1.5rem' }}>
+        <h3 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px', color: '#2C2C2A' }}>
+          Credit card payoff simulator
+        </h3>
+        <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
+          See your full path to a zero balance.
+        </p>
+      </div>
 
-      <div className="ticks"></div>
+      {/* Input form */}
+      <InputCard onSubmit={handleSubmit} />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+      {/* Validation error */}
+      {error && (
+        <div style={{
+          background: '#FFF0F0',
+          border: '0.5px solid #E57373',
+          borderRadius: 8,
+          padding: '0.75rem 1rem',
+          marginBottom: '1rem',
+          color: '#B71C1C',
+          fontSize: 14,
+        }}>
+          Payment too low — balance would grow indefinitely. Minimum to make progress:{' '}
+          <strong>${error.minViablePayment.toFixed(2)}</strong>.
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      )}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {/* Results */}
+      {result && (
+        <>
+          {/* Low payment warning (fixed_months mode) */}
+          {result.lowPaymentWarning && (
+            <div style={{
+              background: '#FFFDE7',
+              border: '0.5px solid #F9A825',
+              borderRadius: 8,
+              padding: '0.75rem 1rem',
+              marginBottom: '1rem',
+              fontSize: 14,
+              color: '#5F4000',
+            }}>
+              Note: the derived monthly payment is less than $25. The schedule is shown below,
+              but consider increasing your payment target.
+            </div>
+          )}
+
+          <InterestSavedCallout result={result} />
+          <MetricStrip result={result} />
+          <PayoffChart result={result} />
+          <SummaryBlock result={result} />
+          <ScheduleTable rows={result.schedule} />
+        </>
+      )}
+    </div>
   )
 }
-
-export default App

@@ -1,5 +1,5 @@
 import type {
-  SimulationParams, SimulationResult, SimulationOutput,
+  SimulationParams, SimulationOutput,
   ScheduleRow, MilestoneFlag, MilestoneDate,
 } from './types'
 import { validateParams } from './validation'
