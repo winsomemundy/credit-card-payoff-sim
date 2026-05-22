@@ -4,6 +4,7 @@ import type { SimulationParams, SimulationResult, ValidationError } from './engi
 import { InputCard } from './components/InputCard'
 import { MetricStrip } from './components/MetricStrip'
 import { InterestSavedCallout } from './components/InterestSavedCallout'
+import { MinPaymentExplainer } from './components/MinPaymentExplainer'
 import { PayoffChart } from './components/PayoffChart'
 import { ScheduleTable } from './components/ScheduleTable'
 import { SummaryBlock } from './components/SummaryBlock'
@@ -80,6 +81,7 @@ export default function App() {
           )}
 
           <InterestSavedCallout result={result} />
+          <MinPaymentExplainer result={result} />
           <MetricStrip result={result} />
           <PayoffChart result={result} />
           <SummaryBlock result={result} />
