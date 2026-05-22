@@ -20,6 +20,7 @@ export function MinPaymentExplainer({ result }: Props) {
       <div style={{ textAlign: 'right', padding: '2px 4px 0' }}>
         <button
           onClick={() => setOpen(o => !o)}
+          aria-expanded={open}
           style={{
             background: 'none',
             border: 'none',
@@ -49,7 +50,7 @@ export function MinPaymentExplainer({ result }: Props) {
         }}>
           {/* Left: formula */}
           <div>
-            <div data-testid="formula-section" style={{
+            <div style={{
               fontSize: 11, color: '#5F5E5A',
               textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8,
             }}>
