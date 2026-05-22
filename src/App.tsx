@@ -34,8 +34,8 @@ export default function App() {
     }}>
       {/* Header */}
       <div style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px', color: '#2C2C2A' }}>
-          Credit card payoff simulator
+        <h3 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px', color: '#26215C' }}>
+          Credit Card Payoff Simulator
         </h3>
         <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
           See your full path to a zero balance.
