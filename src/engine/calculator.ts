@@ -145,6 +145,10 @@ export function runSimulation(params: SimulationParams): SimulationOutput {
     paymentDate = nextPaymentDate(paymentDate, params.dueDayOfMonth)
   }
 
+  const hitSafetyCap =
+    schedule.length === SAFETY_CAP &&
+    schedule[schedule.length - 1].endingBalance > 0
+
   const totalAmountPaid = schedule.reduce((s, r) => s + r.paymentAmount, 0)
   const effectivePayoffDate = schedule[schedule.length - 1].paymentDate
 
@@ -169,6 +173,7 @@ export function runSimulation(params: SimulationParams): SimulationOutput {
     interestSaved: interestSaved > 0 ? interestSaved : undefined,
     monthsSaved: interestSaved > 0 ? monthsSaved : undefined,
     baselineHitSafetyCap: baseline.hitCap,
+    hitSafetyCap: hitSafetyCap || undefined,
     lowPaymentWarning,
     newChargesNote: params.newMonthlyCharges > 0,
   }

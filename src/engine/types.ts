@@ -44,6 +44,7 @@ export interface SimulationResult {
   interestSaved?: number
   monthsSaved?: number
   baselineHitSafetyCap?: boolean   // true when baseline capped at 600 months
+  hitSafetyCap?: boolean           // true when user's own schedule hit the 600-month limit
   lowPaymentWarning?: boolean      // true when fixed_months derives payment < $25
   newChargesNote?: boolean         // true when newMonthlyCharges > 0
 }
