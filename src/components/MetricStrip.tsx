@@ -16,7 +16,7 @@ export function MetricStrip({ result }: Props) {
         <div style={{ background: '#EEEDFE', padding: '1rem', borderRadius: 8 }}>
           <div style={{ fontSize: 13, color: '#534AB7', marginBottom: 4 }}>Time to payoff</div>
           <div style={{ fontSize: 22, fontWeight: 500, color: '#26215C' }}>
-            {result.totalMonths} months{cap && <sup style={{ fontSize: 14 }}>1</sup>}
+            {result.totalMonths} months{cap && <sup style={{ fontSize: 10 }}>1</sup>}
           </div>
         </div>
         {stats.map(s => (
