@@ -257,3 +257,47 @@ describe('runSimulation — safety cap', () => {
     expect(result.schedule.length).toBeLessThanOrEqual(SAFETY_CAP)
   })
 })
+
+describe('runSimulation — safety cap (hitSafetyCap)', () => {
+  it('hitSafetyCap is falsy when schedule resolves normally', () => {
+    // Standard $5k / 18% APR / $150/month resolves in 47 months
+    const result = runSimulation(makeParams())
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.hitSafetyCap).toBeFalsy()
+  })
+
+  it('hitSafetyCap is true when balance grows due to charges', () => {
+    // APR 50%, $100k balance, $4167/month payment, $100/month new charges
+    // Monthly interest ≈ 4166.67 + $100 charges > $4167 payment → balance grows
+    const result = runSimulation(makeParams({
+      startingBalance: 100000,
+      apr: 50,
+      monthlyPayment: 4167,
+      newMonthlyCharges: 100,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.hitSafetyCap).toBe(true)
+  })
+
+  it('schedule has exactly 600 rows when cap is hit', () => {
+    const result = runSimulation(makeParams({
+      startingBalance: 100000,
+      apr: 50,
+      monthlyPayment: 4167,
+      newMonthlyCharges: 100,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule.length).toBe(600)
+  })
+
+  it('last row has a positive ending balance when cap is hit', () => {
+    const result = runSimulation(makeParams({
+      startingBalance: 100000,
+      apr: 50,
+      monthlyPayment: 4167,
+      newMonthlyCharges: 100,
+    }))
+    if (isValidationError(result)) throw new Error('unexpected error')
+    expect(result.schedule[result.schedule.length - 1].endingBalance).toBeGreaterThan(0)
+  })
+})
