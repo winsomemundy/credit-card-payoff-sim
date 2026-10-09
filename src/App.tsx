@@ -88,6 +88,21 @@ export default function App() {
           <ScheduleTable rows={result.schedule} />
         </>
       )}
+
+      {/* Footer */}
+      <footer style={{
+        marginTop: '2.5rem',
+        paddingTop: '1rem',
+        borderTop: '0.5px solid #D3D1C7',
+        fontSize: 13,
+        color: '#5F5E5A',
+      }}>
+        A free student tool by{' '}
+        <a href="https://winsomemundy.com/#tools" style={{ color: '#26215C' }}>
+          Winsome Mundy
+        </a>
+        . More tools at winsomemundy.com.
+      </footer>
     </div>
   )
 }
