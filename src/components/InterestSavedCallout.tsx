@@ -11,35 +11,23 @@ export function InterestSavedCallout({ result }: Props) {
   const months = result.monthsSaved ?? 0
 
   return (
-    <div style={{
-      background: '#E1F5EE', borderRadius: 12, padding: '1rem 1.25rem',
-      marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: 14,
-    }}>
-      <div style={{
-        width: 40, height: 40, borderRadius: '50%', background: '#1D9E75',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        flexShrink: 0, color: 'white', fontSize: 22,
-      }}>↘</div>
-      <div>
-        <div style={{ fontSize: 13, color: '#0F6E56', marginBottom: 2 }}>
-          Compared to paying the minimum
+    <div className="cc-callout">
+      <p className="wm-eyebrow eyebrow">Compared to paying the minimum</p>
+      {cap ? (
+        <div className="cc-callout__text">
+          Under minimum payments, your ongoing charges would cause your balance to{' '}
+          <strong>grow indefinitely</strong> — you'd never pay it off.
+          Your plan saves{' '}
+          <strong>{saved}+ in interest</strong>.
         </div>
-        {cap ? (
-          <div style={{ fontSize: 16, color: '#04342C' }}>
-            Under minimum payments, your ongoing charges would cause your balance to{' '}
-            <strong style={{ fontWeight: 500 }}>grow indefinitely</strong> — you'd never pay it off.
-            Your plan saves{' '}
-            <strong style={{ fontWeight: 500 }}>{saved}+ in interest</strong>.
-          </div>
-        ) : (
-          <div style={{ fontSize: 16, color: '#04342C' }}>
-            You'll save{' '}
-            <strong style={{ fontWeight: 500 }}>{saved} in interest</strong>{' '}
-            and finish{' '}
-            <strong style={{ fontWeight: 500 }}>{months} months sooner</strong>.
-          </div>
-        )}
-      </div>
+      ) : (
+        <div className="cc-callout__text">
+          You'll save{' '}
+          <strong>{saved} in interest</strong>{' '}
+          and finish{' '}
+          <strong>{months} months sooner</strong>.
+        </div>
+      )}
     </div>
   )
 }

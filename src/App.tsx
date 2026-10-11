@@ -25,83 +25,63 @@ export default function App() {
   }
 
   return (
-    <div style={{
-      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-      maxWidth: 760,
-      margin: '0 auto',
-      padding: '2rem 1rem',
-      color: '#2C2C2A',
-    }}>
-      {/* Header */}
-      <div style={{ marginBottom: '1.5rem' }}>
-        <h3 style={{ fontSize: 22, fontWeight: 500, margin: '0 0 4px', color: '#26215C' }}>
-          Credit Card Payoff Simulator
-        </h3>
-        <p style={{ fontSize: 14, color: '#5F5E5A', margin: 0 }}>
-          See your full path to a zero balance.
-        </p>
-      </div>
-
-      {/* Input form */}
-      <InputCard onSubmit={handleSubmit} />
-
-      {/* Validation error */}
-      {error && (
-        <div style={{
-          background: '#FFF0F0',
-          border: '0.5px solid #E57373',
-          borderRadius: 8,
-          padding: '0.75rem 1rem',
-          marginBottom: '1rem',
-          color: '#B71C1C',
-          fontSize: 14,
-        }}>
-          Payment too low — balance would grow indefinitely. Minimum to make progress:{' '}
-          <strong>${error.minViablePayment.toFixed(2)}</strong>.
+    <div className="wm-surface">
+      <nav className="wm-nav" aria-label="Site">
+        <div className="wm-wrap wm-nav__inner">
+          <a className="wm-nav__brand brand" href="https://winsomemundy.com/">Winsome <span>Mundy</span></a>
+          <a className="wm-nav__link" href="https://winsomemundy.com/#tools">Student tools</a>
         </div>
-      )}
+      </nav>
 
-      {/* Results */}
-      {result && (
-        <>
-          {/* Low payment warning (fixed_months mode) */}
-          {result.lowPaymentWarning && (
-            <div style={{
-              background: '#FFFDE7',
-              border: '0.5px solid #F9A825',
-              borderRadius: 8,
-              padding: '0.75rem 1rem',
-              marginBottom: '1rem',
-              fontSize: 14,
-              color: '#5F4000',
-            }}>
-              Note: the derived monthly payment is less than $25. The schedule is shown below,
-              but consider increasing your payment target.
-            </div>
-          )}
+      <main className="wm-wrap" style={{ paddingBlock: '48px 0' }}>
+        {/* Header */}
+        <header style={{ marginBottom: 32 }}>
+          <p className="wm-eyebrow eyebrow">Personal finance · Amortization</p>
+          <h1 className="wm-heading heading-lg">Credit Card Payoff Simulator</h1>
+          <p className="wm-muted" style={{ margin: '10px 0 0' }}>
+            See your full path to a zero balance.
+          </p>
+        </header>
 
-          <InterestSavedCallout result={result} />
-          <MinPaymentExplainer result={result} />
-          <MetricStrip result={result} />
-          <PayoffChart result={result} />
-          <SummaryBlock result={result} />
-          <ScheduleTable rows={result.schedule} />
-        </>
-      )}
+        {/* Input form */}
+        <InputCard onSubmit={handleSubmit} />
+
+        {/* Validation error */}
+        {error && (
+          <div className="cc-notice cc-notice--alert" role="alert">
+            Payment too low — balance would grow indefinitely. Minimum to make progress:{' '}
+            <strong>${error.minViablePayment.toFixed(2)}</strong>.
+          </div>
+        )}
+
+        {/* Results */}
+        {result && (
+          <>
+            {/* Low payment warning (fixed_months mode) */}
+            {result.lowPaymentWarning && (
+              <div className="cc-notice">
+                Note: the derived monthly payment is less than $25. The schedule is shown below,
+                but consider increasing your payment target.
+              </div>
+            )}
+
+            <InterestSavedCallout result={result} />
+            <MinPaymentExplainer result={result} />
+            <MetricStrip result={result} />
+            <PayoffChart result={result} />
+            <SummaryBlock result={result} />
+            <ScheduleTable rows={result.schedule} />
+          </>
+        )}
+      </main>
 
       {/* Footer */}
-      <footer style={{
-        marginTop: '2.5rem',
-        paddingTop: '1rem',
-        borderTop: '0.5px solid #D3D1C7',
-        fontSize: 13,
-        color: '#5F5E5A',
-      }}>
-        A free student tool by{' '}
-        <a href="https://winsomemundy.com/#tools" style={{ color: '#26215C' }}>
-          Winsome Mundy
-        </a>
-        . More tools at winsomemundy.com.
+      <footer className="cc-footer caption">
+        <div className="wm-wrap">
+          A free student tool by{' '}
+          <a href="https://winsomemundy.com/#tools">Winsome Mundy</a>
+          . More tools at winsomemundy.com.
+        </div>
       </footer>
     </div>
   )

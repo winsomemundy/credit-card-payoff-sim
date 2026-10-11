@@ -15,94 +15,57 @@ export function MinPaymentExplainer({ result }: Props) {
   const minPayment = Math.max(25, Math.round((onePercent + row.interestAccrued) * 100) / 100)
 
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div className="cc-explainer">
       {/* Toggle link */}
-      <div style={{ textAlign: 'right', padding: '2px 4px 0' }}>
-        <button
-          onClick={() => setOpen(o => !o)}
-          aria-expanded={open}
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
-            fontSize: 12,
-            color: '#1D9E75',
-            textDecoration: 'underline',
-            textUnderlineOffset: '2px',
-          }}
-        >
-          How is the minimum payment calculated? {open ? '▴' : '▾'}
-        </button>
-      </div>
+      <button
+        className="cc-explainer__toggle"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+      >
+        How is the minimum payment calculated? {open ? '▴' : '▾'}
+      </button>
 
       {/* Expanded panel */}
       {open && (
-        <div style={{
-          marginTop: 6,
-          background: 'white',
-          border: '0.5px solid #a8dfc8',
-          borderRadius: 10,
-          padding: '1rem 1.25rem',
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '1.25rem',
-        }}>
+        <div className="cc-explainer__panel">
           {/* Left: formula */}
           <div>
-            <div style={{
-              fontSize: 11, color: '#5F5E5A',
-              textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8,
-            }}>
-              Formula
-            </div>
-            <div style={{ fontSize: 13, color: '#2C2C2A', lineHeight: 1.6, marginBottom: 8 }}>
+            <div className="cc-explainer__label topic">Formula</div>
+            <div className="cc-explainer__text">
               Each month, the minimum is the <em>greater</em> of:
             </div>
-            <div style={{
-              background: '#f0faf6', borderRadius: 8, padding: '8px 10px',
-              fontSize: 12, fontFamily: 'monospace', color: '#04342C', lineHeight: 1.8,
-            }}>
+            <div className="cc-formula">
               $25 floor<br />
-              <span style={{ color: '#0F6E56', fontWeight: 600 }}>— or —</span><br />
+              <span className="cc-formula__or">— or —</span><br />
               1% × balance<br />
               + monthly interest
             </div>
-            <div style={{ marginTop: 8, fontSize: 11, color: '#5F5E5A' }}>
+            <div className="cc-explainer__note">
               Standard practice used by major US credit card issuers.
             </div>
           </div>
 
           {/* Right: live numbers */}
           <div>
-            <div style={{
-              fontSize: 11, color: '#5F5E5A',
-              textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 8,
-            }}>
-              Your first payment
-            </div>
-            <div style={{ fontSize: 13, color: '#5F5E5A', marginBottom: 10 }}>
+            <div className="cc-explainer__label topic">Your first payment</div>
+            <div className="cc-explainer__text wm-muted">
               Based on your {formatCurrency(row.startingBalance)} opening balance
             </div>
-            <div style={{ fontSize: 13, color: '#2C2C2A', lineHeight: 2 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#5F5E5A' }}>1% × {formatCurrency(row.startingBalance)}</span>
-                <span style={{ fontWeight: 500 }}>{formatCurrency(onePercent)}</span>
+            <div className="cc-calc">
+              <div className="cc-calc__row">
+                <span>1% × {formatCurrency(row.startingBalance)}</span>
+                <span>{formatCurrency(onePercent)}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <span style={{ color: '#5F5E5A' }}>+ interest</span>
-                <span style={{ fontWeight: 500 }}>{formatCurrency(row.interestAccrued)}</span>
+              <div className="cc-calc__row">
+                <span>+ interest</span>
+                <span>{formatCurrency(row.interestAccrued)}</span>
               </div>
-              <div style={{
-                borderTop: '0.5px solid #a8dfc8', marginTop: 4, paddingTop: 6,
-                display: 'flex', justifyContent: 'space-between',
-                fontWeight: 600, color: '#0F6E56',
-              }}>
+              <div className="cc-calc__row cc-calc__total">
                 <span>Min payment</span>
                 <span>{formatCurrency(minPayment)}</span>
               </div>
             </div>
-            <div style={{ marginTop: 8, fontSize: 11, color: '#5F5E5A' }}>
+            <div className="cc-explainer__note">
               Decreases each month as your balance falls.
             </div>
           </div>

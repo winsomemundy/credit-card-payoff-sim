@@ -8,6 +8,7 @@ const CHART_H = 200
 const PAD_L = 42
 const PAD_T = 12
 const PAD_B = 30
+const PAD_R = 10 // room for the payoff marker at the right edge
 
 export function PayoffChart({ result }: Props) {
   const { schedule } = result
@@ -48,20 +49,19 @@ export function PayoffChart({ result }: Props) {
     dashed: t !== 0,
   }))
 
+  // Milestones and the payoff point are diamonds, the site's marker motif
+  const diamond = (cx: number, cy: number, r: number) =>
+    `${cx},${cy - r} ${cx + r},${cy} ${cx},${cy + r} ${cx - r},${cy}`
+
   return (
-    <div style={{
-      background: 'white', borderRadius: 12,
-      border: '0.5px solid rgba(0,0,0,0.15)', padding: '1.25rem', marginBottom: '1.5rem',
-    }}>
-      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', marginBottom: 12 }}>
-        <h4 style={{ fontSize: 16, fontWeight: 500, margin: 0, color: '#2C2C2A' }}>
-          Progress to payoff
-        </h4>
-        <span style={{ fontSize: 13, color: '#5F5E5A' }}>Balance over time</span>
+    <div className="wm-card">
+      <div className="wm-card__head">
+        <h2 className="wm-card__title heading-sm">Progress to payoff</h2>
+        <span className="wm-muted" style={{ fontSize: '0.85rem' }}>Balance over time</span>
       </div>
       <svg
-        viewBox={`0 0 ${CHART_W} ${CHART_H}`}
-        style={{ width: '100%', height: 'auto', display: 'block' }}
+        viewBox={`0 0 ${CHART_W + PAD_R} ${CHART_H}`}
+        className="cc-chart"
         aria-label="Balance over time chart"
       >
         {/* Grid lines and Y labels */}
@@ -69,68 +69,54 @@ export function PayoffChart({ result }: Props) {
           <g key={i}>
             <line
               x1={PAD_L} y1={y} x2={CHART_W} y2={y}
-              stroke="#D3D1C7" strokeWidth={0.5}
+              className="cc-chart__grid"
               strokeDasharray={dashed ? '2,3' : undefined}
             />
-            <text x={PAD_L - 4} y={y + 4} textAnchor="end" fontSize={10} fill="#888780">
+            <text x={PAD_L - 4} y={y + 4} textAnchor="end" className="cc-chart__axis">
               {label}
             </text>
           </g>
         ))}
 
         {/* Area fill */}
-        <polygon points={areaPoints} fill="#EEEDFE" opacity={0.7} />
+        <polygon points={areaPoints} className="cc-chart__area" />
 
         {/* Balance curve */}
-        <polyline points={polyline} fill="none" stroke="#534AB7" strokeWidth={2} />
+        <polyline points={polyline} className="cc-chart__line" />
 
-        {/* Milestone vertical lines + circles */}
+        {/* Milestone vertical lines + markers */}
         {milestoneRows.map(row => {
           const cx = xOf(row.paymentNumber)
           const cy = yOf(row.endingBalance)
           return (
             <g key={row.milestone}>
-              <line
-                x1={cx} y1={PAD_T} x2={cx} y2={CHART_H - PAD_B}
-                stroke="#1D9E75" strokeWidth={1} strokeDasharray="3,3"
-              />
-              <circle cx={cx} cy={cy} r={5} fill="#1D9E75" stroke="white" strokeWidth={2} />
-              <text x={cx + 6} y={cy - 4} fontSize={11} fontWeight={500} fill="#0F6E56">
+              <line x1={cx} y1={PAD_T} x2={cx} y2={CHART_H - PAD_B} className="cc-chart__milestone-line" />
+              <polygon points={diamond(cx, cy, 6)} className="cc-chart__milestone" />
+              <text x={cx + 8} y={cy - 6} className="cc-chart__milestone-label">
                 {row.milestone}
               </text>
             </g>
           )
         })}
 
-        {/* Payoff dot */}
-        <circle
-          cx={xOf(totalRows)} cy={yOf(0)} r={6}
-          fill="#0F6E56" stroke="white" strokeWidth={2}
-        />
+        {/* Payoff marker */}
+        <polygon points={diamond(xOf(totalRows), yOf(0), 7)} className="cc-chart__payoff" />
 
         {/* X-axis labels */}
-        <text x={PAD_L} y={CHART_H - 4} fontSize={10} fill="#888780">Now</text>
-        <text x={CHART_W} y={CHART_H - 4} textAnchor="end" fontSize={10} fill="#888780">
+        <text x={PAD_L} y={CHART_H - 4} className="cc-chart__axis">Now</text>
+        <text x={CHART_W} y={CHART_H - 4} textAnchor="end" className="cc-chart__axis">
           {formatDate(payoffRow.paymentDate)}
         </text>
       </svg>
 
       {/* Legend */}
-      <div style={{
-        display: 'flex', flexWrap: 'wrap', gap: 16,
-        marginTop: 16, paddingTop: 12,
-        borderTop: '0.5px solid rgba(0,0,0,0.15)',
-      }}>
+      <div className="cc-legend">
         {(['25%', '50%', '75%', '100%'] as const).map(flag => {
           const m = result.milestones[flag]
-          const color = flag === '100%' ? '#0F6E56' : '#1D9E75'
           return (
-            <div key={flag} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <span style={{
-                width: 10, height: 10, borderRadius: '50%',
-                background: color, display: 'inline-block', flexShrink: 0,
-              }} />
-              <span style={{ fontSize: 13, color: '#5F5E5A' }}>
+            <div key={flag} className="cc-milestone">
+              <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
+              <span>
                 {flag} reached: {formatDate(m.date)}
                 {m.joint && ` (with ${m.joint})`}
               </span>

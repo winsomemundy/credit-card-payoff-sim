@@ -12,22 +12,22 @@ export function MetricStrip({ result }: Props) {
   ]
   return (
     <>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: cap ? '0.5rem' : '1.5rem' }}>
-        <div style={{ background: '#EEEDFE', padding: '1rem', borderRadius: 8 }}>
-          <div style={{ fontSize: 13, color: '#534AB7', marginBottom: 4 }}>Time to payoff</div>
-          <div style={{ fontSize: 22, fontWeight: 500, color: '#26215C' }}>
+      <div className="wm-impact" style={{ marginBottom: cap ? 8 : 24 }}>
+        <div className="wm-impact__cell">
+          <span className="wm-impact__label topic">Time to payoff</span>
+          <span className="wm-impact__value">
             {result.totalMonths} months{cap && <sup style={{ fontSize: 10 }}>1</sup>}
-          </div>
+          </span>
         </div>
         {stats.map(s => (
-          <div key={s.label} style={{ background: '#EEEDFE', padding: '1rem', borderRadius: 8 }}>
-            <div style={{ fontSize: 13, color: '#534AB7', marginBottom: 4 }}>{s.label}</div>
-            <div style={{ fontSize: 22, fontWeight: 500, color: '#26215C' }}>{s.value}</div>
+          <div key={s.label} className="wm-impact__cell">
+            <span className="wm-impact__label topic">{s.label}</span>
+            <span className="wm-impact__value">{s.value}</span>
           </div>
         ))}
       </div>
       {cap && (
-        <p style={{ fontSize: 13, color: '#5F5E5A', margin: '0 0 1.5rem' }}>
+        <p className="cc-footnote" style={{ margin: '0 0 24px' }}>
           <sup>1</sup> Simulation cap reached (50 years). Increase your monthly payment to see a full payoff date.
         </p>
       )}
