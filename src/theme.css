@@ -102,10 +102,11 @@ html, body { margin: 0; background: var(--night); }
 .cc-submit { width: 100%; margin-top: 20px; }
 @media (max-width: 640px) { .cc-fields, .cc-fields--2 { grid-template-columns: 1fr; } }
 
-/* notices */
-.cc-notice { padding: 14px 18px; margin-bottom: 16px; background: var(--panel); border: var(--hairline) solid var(--gold); font-size: 0.95rem; color: var(--text); }
-.cc-notice--alert { border-color: var(--alert); }
-.cc-notice--alert strong { color: var(--alert); }
+/* notice (design system: Notice) */
+.wm-notice { margin: 0 0 16px; padding: 14px 18px; background: var(--panel); border: var(--hairline) solid var(--gold); color: var(--text); font-size: 0.95rem; }
+.wm-notice strong { font-weight: 500; }
+.wm-notice--alert { border-color: var(--alert); }
+.wm-notice--alert strong { color: var(--alert); }
 
 /* interest saved callout */
 .cc-callout { padding: 20px var(--card-pad); margin-bottom: 8px; background: var(--panel); border: var(--hairline) solid var(--gold); }

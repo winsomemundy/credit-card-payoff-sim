@@ -48,7 +48,7 @@ export default function App() {
 
         {/* Validation error */}
         {error && (
-          <div className="cc-notice cc-notice--alert" role="alert">
+          <div className="wm-notice wm-notice--alert" role="alert">
             Payment too low — balance would grow indefinitely. Minimum to make progress:{' '}
             <strong>${error.minViablePayment.toFixed(2)}</strong>.
           </div>
@@ -59,7 +59,7 @@ export default function App() {
           <>
             {/* Low payment warning (fixed_months mode) */}
             {result.lowPaymentWarning && (
-              <div className="cc-notice">
+              <div className="wm-notice">
                 Note: the derived monthly payment is less than $25. The schedule is shown below,
                 but consider increasing your payment target.
               </div>
