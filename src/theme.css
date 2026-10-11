@@ -29,10 +29,9 @@
   --rule-mark: 36px;
   --hairline: 1px;
 
-  /* calculator-only additions, not yet in the design system */
-  --violet-tint: rgba(155, 123, 255, 0.14); /* payoff row, selected plan, chart area */
-  --gold-tint: rgba(212, 174, 106, 0.1);    /* milestone rows */
-  --alert: #ff9b9b;                          /* error text and border: 7.3:1 on panel */
+  --violet-tint: #9b7bff24;  /* violet at 14%: payoff row, selected plan, chart area */
+  --gold-tint: #d4ae6a1a;    /* gold at 10%: milestone rows */
+  --alert: #ff9b9b;          /* errors only: 7.7:1 on panel */
 
   color-scheme: dark;
 }
