@@ -108,10 +108,10 @@ html, body { margin: 0; background: var(--night); }
 .wm-notice--alert { border-color: var(--alert); }
 .wm-notice--alert strong { color: var(--alert); }
 
-/* interest saved callout */
-.cc-callout { padding: 20px var(--card-pad); margin-bottom: 8px; background: var(--panel); border: var(--hairline) solid var(--gold); }
-.cc-callout__text { font-size: 1.1rem; color: var(--text); }
-.cc-callout__text strong { color: var(--gold); font-weight: 500; }
+/* comparison callout (design system: Comparison Callout) */
+.wm-callout { margin: 0 0 8px; padding: 20px var(--card-pad); background: var(--panel); border: var(--hairline) solid var(--gold); }
+.wm-callout__text { margin: 0; font-size: 1.1rem; color: var(--text); }
+.wm-callout__text strong { color: var(--gold); font-weight: 500; }
 
 /* minimum payment explainer */
 .cc-explainer { margin-bottom: 24px; }
