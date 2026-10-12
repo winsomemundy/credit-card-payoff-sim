@@ -25,7 +25,7 @@ export interface ScheduleRow {
 }
 
 export interface MilestoneDate {
-  date: Date
+  date?: Date                      // undefined when the milestone is not reached within the safety cap
   joint?: MilestoneFlag            // set if this milestone was skipped and backfilled
 }
 
@@ -46,6 +46,13 @@ export interface SimulationResult {
   baselineHitSafetyCap?: boolean   // true when baseline capped at 600 months
   hitSafetyCap?: boolean           // true when user's own schedule hit the 600-month limit
   lowPaymentWarning?: boolean      // true when fixed_months derives payment < $25
+  mode?: PayoffMode                // the plan type the result was built from
+  monthlyPayment?: number          // the regular monthly payment used for the plan
+  targetMonths?: number            // fixed_months only: the requested number of months
+  minimumPayment?: number          // first-month issuer minimum: max($25, 1% of balance + interest)
+  belowMinimumPayment?: boolean    // true when monthlyPayment < minimumPayment
+  extraInterest?: number           // set when the plan costs more interest than paying the minimum
+  extraMonths?: number             // months longer than paying the minimum (with extraInterest)
   newChargesNote?: boolean         // true when newMonthlyCharges > 0
 }
 

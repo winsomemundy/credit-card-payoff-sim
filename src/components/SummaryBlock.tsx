@@ -1,5 +1,5 @@
 import type { SimulationResult } from '../engine/types'
-import { formatDate } from '../utils/format'
+import { formatMilestoneDate } from '../utils/format'
 
 interface Props { result: SimulationResult }
 
@@ -17,7 +17,7 @@ export function SummaryBlock({ result }: Props) {
               <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
               <span>
                 <strong>{flag} reached:</strong>{' '}
-                {formatDate(m.date)}
+                {formatMilestoneDate(m.date)}
                 {m.joint && (
                   <span className="wm-muted" style={{ fontSize: '0.85rem' }}>
                     {' '}(reached together with {m.joint})

@@ -8,7 +8,8 @@ export function MetricStrip({ result }: Props) {
   const stats = [
     { label: 'Total paid', value: formatCurrency(result.totalAmountPaid) },
     { label: 'Interest paid', value: formatCurrency(result.totalInterestPaid) },
-    { label: 'Payoff date', value: formatDate(result.effectivePayoffDate) },
+    // A capped schedule never reaches $0, so it has no payoff date
+    { label: 'Payoff date', value: cap ? 'Not within 50 years' : formatDate(result.effectivePayoffDate) },
   ]
   return (
     <>
@@ -28,7 +29,11 @@ export function MetricStrip({ result }: Props) {
       </div>
       {cap && (
         <p className="cc-footnote" style={{ margin: '0 0 24px' }}>
-          <sup>1</sup> Simulation cap reached (50 years). Increase your monthly payment to see a full payoff date.
+          <sup>1</sup> Simulation cap reached (50 years).{' '}
+          {result.mode === 'fixed_months'
+            ? 'Choose a shorter target (600 months at most) to see a full payoff date.'
+            : 'Increase your monthly payment to see a full payoff date.'}{' '}
+          Totals cover the first 50 years only.
         </p>
       )}
     </>

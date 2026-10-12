@@ -48,3 +48,16 @@ describe('MetricStrip', () => {
     expect(screen.queryByText(/simulation cap reached/i)).not.toBeInTheDocument()
   })
 })
+
+describe('MetricStrip — capped plans', () => {
+  it('suggests a shorter target in fixed_months mode', () => {
+    render(<MetricStrip result={{ ...makeResult(600, true), mode: 'fixed_months' }} />)
+    expect(screen.getByText(/choose a shorter target/i)).toBeInTheDocument()
+    expect(screen.queryByText(/increase your monthly payment/i)).not.toBeInTheDocument()
+  })
+
+  it('shows no payoff date when the cap is hit', () => {
+    render(<MetricStrip result={makeResult(600, true)} />)
+    expect(screen.getByText('Not within 50 years')).toBeInTheDocument()
+  })
+})

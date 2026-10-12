@@ -147,7 +147,7 @@ describe('milestone anchoring with new monthly charges', () => {
     }))
     if (isValidationError(result)) throw new Error()
     // Find when 25% was hit
-    const m25date = result.milestones['25%'].date
+    const m25date = result.milestones['25%'].date!
     // At that point, cumulative principal paid across rows up to that date should be >= 250
     let cumPrincipal = 0
     for (const row of result.schedule) {

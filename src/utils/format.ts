@@ -15,3 +15,9 @@ export function formatDate(date: Date): string {
     timeZone: 'UTC',
   }).format(date)
 }
+
+// A milestone the schedule never reached has no date. Intl would format a
+// missing date as today, so say so in words instead.
+export function formatMilestoneDate(date: Date | undefined): string {
+  return date ? formatDate(date) : 'not reached within 50 years'
+}

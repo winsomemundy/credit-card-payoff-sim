@@ -80,9 +80,9 @@ export function InputCard({ onSubmit }: Props) {
           </div>
         ) : (
           <div>
-            <label className="cc-label" htmlFor="cc-months">Number of months</label>
+            <label className="cc-label" htmlFor="cc-months">Number of months (up to 600)</label>
             <input
-              id="cc-months" className="cc-input" type="number" min="1" value={months}
+              id="cc-months" className="cc-input" type="number" min="1" max="600" step="1" value={months}
               onChange={e => setMonths(e.target.value)} required
             />
           </div>

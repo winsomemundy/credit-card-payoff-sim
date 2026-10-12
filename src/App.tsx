@@ -8,6 +8,7 @@ import { MinPaymentExplainer } from './components/MinPaymentExplainer'
 import { PayoffChart } from './components/PayoffChart'
 import { ScheduleTable } from './components/ScheduleTable'
 import { SummaryBlock } from './components/SummaryBlock'
+import { formatCurrency } from './utils/format'
 
 export default function App() {
   const [result, setResult] = useState<SimulationResult | null>(null)
@@ -57,11 +58,10 @@ export default function App() {
         {/* Results */}
         {result && (
           <>
-            {/* Low payment warning (fixed_months mode) */}
-            {result.lowPaymentWarning && (
+            {/* Cautions about the plan, gathered into one notice */}
+            {planNotes(result).length > 0 && (
               <div className="wm-notice">
-                Note: the derived monthly payment is less than $25. The schedule is shown below,
-                but consider increasing your payment target.
+                Note: {planNotes(result).join(' ')}
               </div>
             )}
 
@@ -85,4 +85,26 @@ export default function App() {
       </footer>
     </div>
   )
+}
+
+function planNotes(result: SimulationResult): string[] {
+  const notes: string[] = []
+  if (result.lowPaymentWarning) {
+    notes.push('the derived monthly payment is less than $25. The schedule is shown below, but consider increasing your payment target.')
+  }
+  if (result.belowMinimumPayment && result.monthlyPayment !== undefined && result.minimumPayment !== undefined) {
+    notes.push(
+      `${notes.length ? 'The' : 'the'} ${formatCurrency(result.monthlyPayment)} monthly payment is below the ` +
+      `${formatCurrency(result.minimumPayment)} minimum a card issuer would likely require in the first month ` +
+      '(1% of the balance plus interest), so a real card would not accept this plan.'
+    )
+  }
+  if (result.mode === 'fixed_months' && result.targetMonths && !result.hitSafetyCap &&
+      result.totalMonths < result.targetMonths) {
+    notes.push(
+      `${notes.length ? 'Payments' : 'payments'} are rounded to the cent, so this plan pays off in ` +
+      `${result.totalMonths} months instead of the ${result.targetMonths}-month target.`
+    )
+  }
+  return notes
 }

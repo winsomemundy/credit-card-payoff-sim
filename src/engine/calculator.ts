@@ -14,6 +14,22 @@ function roundHalfUp(value: number): number {
   return Math.round(value * 100) / 100
 }
 
+// Months the schedule loop below needs to reach $0 at a fixed payment, using the
+// same per-month rounding. Returns Infinity when the balance is not cleared within `limit`.
+function monthsToPayoff(
+  startingBalance: number, monthlyRate: number, newMonthlyCharges: number,
+  payment: number, limit: number,
+): number {
+  let balance = startingBalance
+  for (let n = 1; n <= limit; n++) {
+    const balanceAfterInterest = balance + roundHalfUp(balance * monthlyRate) + newMonthlyCharges
+    const actualPayment = Math.min(balanceAfterInterest, payment)
+    balance = balanceAfterInterest - actualPayment
+    if (balance <= 0.005) return n
+  }
+  return Infinity
+}
+
 interface MilestoneState {
   threshold25: number
   threshold50: number
@@ -96,6 +112,17 @@ export function runSimulation(params: SimulationParams): SimulationOutput {
     )
     monthlyPayment = derived.payment
     lowPaymentWarning = derived.lowPaymentWarning
+
+    // The amortization formula ignores per-month cent rounding. On long, nearly
+    // interest-only plans that rounding compounds and leaves a balance after the
+    // target month, so raise the payment a cent at a time until the schedule
+    // really clears within the target.
+    const limit = Math.min(params.numberOfMonths!, SAFETY_CAP)
+    for (let i = 0; i < 100000 && monthsToPayoff(
+      params.startingBalance, monthlyRate, params.newMonthlyCharges, monthlyPayment, limit,
+    ) === Infinity; i++) {
+      monthlyPayment = roundHalfUp(monthlyPayment + 0.01)
+    }
   }
 
   const schedule: ScheduleRow[] = []
@@ -155,12 +182,25 @@ export function runSimulation(params: SimulationParams): SimulationOutput {
   const baseline = runBaselineSimulation(params)
   const interestSaved = roundHalfUp(baseline.totalInterest - totalInterestPaid)
   const monthsSaved = baseline.totalMonths - schedule.length
+  // A plan that pays less than the issuer minimum costs more than the baseline
+  const extraInterest = baseline.hitCap ? 0 : roundHalfUp(totalInterestPaid - baseline.totalInterest)
 
+  // What a card issuer would require in the first month (same rule as the baseline)
+  const firstMonthInterest = roundHalfUp(params.startingBalance * monthlyRate)
+  const minimumPayment = Math.max(
+    MIN_PAYMENT_FLOOR,
+    roundHalfUp(params.startingBalance * MIN_PAYMENT_RATE + firstMonthInterest),
+  )
+  // A balance smaller than the minimum is simply paid in full
+  const belowMinimumPayment =
+    monthlyPayment < minimumPayment && monthlyPayment < params.startingBalance + firstMonthInterest
+
+  // Milestones the schedule never reached (the safety cap hit first) stay undefined
   const milestones = {
-    '25%': { date: ms.date25!, joint: ms.joint25 } as MilestoneDate,
-    '50%': { date: ms.date50!, joint: ms.joint50 } as MilestoneDate,
-    '75%': { date: ms.date75! } as MilestoneDate,
-    '100%': { date: ms.date100! } as MilestoneDate,
+    '25%': { date: ms.date25, joint: ms.joint25 } as MilestoneDate,
+    '50%': { date: ms.date50, joint: ms.joint50 } as MilestoneDate,
+    '75%': { date: ms.date75 } as MilestoneDate,
+    '100%': { date: ms.date100 } as MilestoneDate,
   }
 
   return {
@@ -176,5 +216,12 @@ export function runSimulation(params: SimulationParams): SimulationOutput {
     hitSafetyCap: hitSafetyCap || undefined,
     lowPaymentWarning,
     newChargesNote: params.newMonthlyCharges > 0,
+    mode: params.mode,
+    monthlyPayment,
+    targetMonths: params.mode === 'fixed_months' ? params.numberOfMonths : undefined,
+    minimumPayment,
+    belowMinimumPayment,
+    extraInterest: extraInterest > 0 ? extraInterest : undefined,
+    extraMonths: extraInterest > 0 ? schedule.length - baseline.totalMonths : undefined,
   }
 }

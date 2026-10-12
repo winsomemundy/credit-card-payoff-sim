@@ -4,6 +4,7 @@ import { formatCurrency } from '../utils/format'
 interface Props { result: SimulationResult }
 
 export function InterestSavedCallout({ result }: Props) {
+  if (result.extraInterest) return <ExtraCostCallout result={result} />
   if (!result.interestSaved) return null
 
   const cap = result.baselineHitSafetyCap
@@ -28,6 +29,29 @@ export function InterestSavedCallout({ result }: Props) {
           <strong>{months} months sooner</strong>.
         </div>
       )}
+    </div>
+  )
+}
+
+// Shown when the plan pays less than the minimum each month and so costs more
+function ExtraCostCallout({ result }: Props) {
+  const extra = formatCurrency(result.extraInterest!)
+  const months = result.extraMonths ?? 0
+  const capped = result.hitSafetyCap
+
+  return (
+    <div className="cc-callout">
+      <p className="wm-eyebrow eyebrow">Compared to paying the minimum</p>
+      <div className="cc-callout__text">
+        This plan costs{' '}
+        <strong>{extra}{capped ? '+' : ''} more in interest</strong>
+        {capped ? (
+          <> and is not paid off within 50 years</>
+        ) : months > 0 ? (
+          <>{' '}and takes <strong>{months} months longer</strong></>
+        ) : null}
+        {' '}than paying the minimum each month.
+      </div>
     </div>
   )
 }

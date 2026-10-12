@@ -1,5 +1,5 @@
 import type { SimulationResult } from '../engine/types'
-import { formatDate } from '../utils/format'
+import { formatDate, formatMilestoneDate } from '../utils/format'
 
 interface Props { result: SimulationResult }
 
@@ -92,15 +92,22 @@ export function PayoffChart({ result }: Props) {
             <g key={row.milestone}>
               <line x1={cx} y1={PAD_T} x2={cx} y2={CHART_H - PAD_B} className="cc-chart__milestone-line" />
               <polygon points={diamond(cx, cy, 6)} className="cc-chart__milestone" />
-              <text x={cx + 8} y={cy - 6} className="cc-chart__milestone-label">
+              {/* Labels near the right edge sit to the left of their marker */}
+              <text
+                x={cx > CHART_W - 40 ? cx - 8 : cx + 8} y={cy - 6}
+                textAnchor={cx > CHART_W - 40 ? 'end' : 'start'}
+                className="cc-chart__milestone-label"
+              >
                 {row.milestone}
               </text>
             </g>
           )
         })}
 
-        {/* Payoff marker */}
-        <polygon points={diamond(xOf(totalRows), yOf(0), 7)} className="cc-chart__payoff" />
+        {/* Payoff marker, only when the balance actually reaches $0 */}
+        {!result.hitSafetyCap && (
+          <polygon points={diamond(xOf(totalRows), yOf(0), 7)} className="cc-chart__payoff" />
+        )}
 
         {/* X-axis labels */}
         <text x={PAD_L} y={CHART_H - 4} className="cc-chart__axis">Now</text>
@@ -117,7 +124,7 @@ export function PayoffChart({ result }: Props) {
             <div key={flag} className="cc-milestone">
               <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
               <span>
-                {flag} reached: {formatDate(m.date)}
+                {flag} reached: {formatMilestoneDate(m.date)}
                 {m.joint && ` (with ${m.joint})`}
               </span>
             </div>
