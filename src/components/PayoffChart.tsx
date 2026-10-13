@@ -61,7 +61,7 @@ export function PayoffChart({ result }: Props) {
       </div>
       <svg
         viewBox={`0 0 ${CHART_W + PAD_R} ${CHART_H}`}
-        className="cc-chart"
+        className="wm-chart"
         aria-label="Balance over time chart"
       >
         {/* Grid lines and Y labels */}
@@ -69,20 +69,20 @@ export function PayoffChart({ result }: Props) {
           <g key={i}>
             <line
               x1={PAD_L} y1={y} x2={CHART_W} y2={y}
-              className="cc-chart__grid"
+              className="wm-chart__grid"
               strokeDasharray={dashed ? '2,3' : undefined}
             />
-            <text x={PAD_L - 4} y={y + 4} textAnchor="end" className="cc-chart__axis">
+            <text x={PAD_L - 4} y={y + 4} textAnchor="end" className="wm-chart__axis">
               {label}
             </text>
           </g>
         ))}
 
         {/* Area fill */}
-        <polygon points={areaPoints} className="cc-chart__area" />
+        <polygon points={areaPoints} className="wm-chart__area" />
 
         {/* Balance curve */}
-        <polyline points={polyline} className="cc-chart__line" />
+        <polyline points={polyline} className="wm-chart__line" />
 
         {/* Milestone vertical lines + markers */}
         {milestoneRows.map(row => {
@@ -90,13 +90,13 @@ export function PayoffChart({ result }: Props) {
           const cy = yOf(row.endingBalance)
           return (
             <g key={row.milestone}>
-              <line x1={cx} y1={PAD_T} x2={cx} y2={CHART_H - PAD_B} className="cc-chart__milestone-line" />
-              <polygon points={diamond(cx, cy, 6)} className="cc-chart__milestone" />
+              <line x1={cx} y1={PAD_T} x2={cx} y2={CHART_H - PAD_B} className="wm-chart__marker-line" />
+              <polygon points={diamond(cx, cy, 6)} className="wm-chart__marker" />
               {/* Labels near the right edge sit to the left of their marker */}
               <text
                 x={cx > CHART_W - 40 ? cx - 8 : cx + 8} y={cy - 6}
                 textAnchor={cx > CHART_W - 40 ? 'end' : 'start'}
-                className="cc-chart__milestone-label"
+                className="wm-chart__marker-label"
               >
                 {row.milestone}
               </text>
@@ -106,25 +106,25 @@ export function PayoffChart({ result }: Props) {
 
         {/* Payoff marker, only when the balance actually reaches $0 */}
         {!result.hitSafetyCap && (
-          <polygon points={diamond(xOf(totalRows), yOf(0), 7)} className="cc-chart__payoff" />
+          <polygon points={diamond(xOf(totalRows), yOf(0), 7)} className="wm-chart__end" />
         )}
 
         {/* X-axis labels */}
-        <text x={PAD_L} y={CHART_H - 4} className="cc-chart__axis">Now</text>
-        <text x={CHART_W} y={CHART_H - 4} textAnchor="end" className="cc-chart__axis">
+        <text x={PAD_L} y={CHART_H - 4} className="wm-chart__axis">Now</text>
+        <text x={CHART_W} y={CHART_H - 4} textAnchor="end" className="wm-chart__axis">
           {formatDate(payoffRow.paymentDate)}
         </text>
       </svg>
 
       {/* Legend: the milestone dates */}
-      <div className="cc-legend">
-        <h3 className="cc-legend__label topic">Milestone dates</h3>
-        <div className="cc-legend__items">
+      <div className="wm-legend">
+        <h3 className="wm-legend__label topic">Milestone dates</h3>
+        <div className="wm-legend__items">
           {(['25%', '50%', '75%', '100%'] as const).map(flag => {
             const m = result.milestones[flag]
             return (
-              <div key={flag} className="cc-milestone">
-                <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
+              <div key={flag} className="wm-legend__item">
+                <span className={flag === '100%' ? 'wm-diamond wm-diamond--end' : 'wm-diamond'} />
                 <span>
                   {flag} reached: {formatMilestoneDate(m.date)}
                   {m.joint && ` (reached together with ${m.joint})`}
@@ -134,7 +134,7 @@ export function PayoffChart({ result }: Props) {
           })}
         </div>
         {result.newChargesNote && (
-          <p className="cc-footnote">
+          <p className="wm-footnote">
             * New monthly charges extend the payoff date beyond the milestone dates shown above.
           </p>
         )}

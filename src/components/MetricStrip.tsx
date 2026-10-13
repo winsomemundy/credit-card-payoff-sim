@@ -28,7 +28,7 @@ export function MetricStrip({ result }: Props) {
         ))}
       </div>
       {cap && (
-        <p className="cc-footnote" style={{ margin: '0 0 24px' }}>
+        <p className="wm-footnote" style={{ margin: '0 0 24px' }}>
           <sup>1</sup> Simulation cap reached (50 years).{' '}
           {result.mode === 'fixed_months'
             ? 'Choose a shorter target (600 months at most) to see a full payoff date.'

@@ -7,12 +7,12 @@ export function ScheduleTable({ rows }: Props) {
   return (
     <div className="wm-card">
       <h2 className="wm-card__title heading-sm">Payment schedule</h2>
-      <div className="cc-table-scroll">
-        <table className="cc-table">
+      <div className="wm-table-scroll">
+        <table className="wm-table">
           <thead>
             <tr>
-              <th className="cc-left">#</th>
-              <th className="cc-left">Date</th>
+              <th className="wm-left">#</th>
+              <th className="wm-left">Date</th>
               <th>Balance</th>
               <th>Payment</th>
               <th>Interest</th>
@@ -24,24 +24,24 @@ export function ScheduleTable({ rows }: Props) {
             {rows.map(row => {
               const isMilestone = row.milestone !== null && row.milestone !== '100%'
               const isPayoff = row.milestone === '100%'
-              const rowClass = isPayoff ? 'cc-row--payoff' : isMilestone ? 'cc-row--milestone' : undefined
+              const rowClass = isPayoff ? 'wm-row--final' : isMilestone ? 'wm-row--milestone' : undefined
 
               return (
                 <tr key={row.paymentNumber} className={rowClass}>
-                  <td className="cc-left cc-dim">{row.paymentNumber}</td>
-                  <td className="cc-left">
+                  <td className="wm-left wm-dim">{row.paymentNumber}</td>
+                  <td className="wm-left">
                     {formatDate(row.paymentDate)}
                     {row.milestone && (
-                      <span className={isPayoff ? 'cc-pill cc-pill--payoff' : 'cc-pill'}>
+                      <span className={isPayoff ? 'wm-pill wm-pill--final' : 'wm-pill'}>
                         {row.milestone}
                       </span>
                     )}
                   </td>
                   <td>{formatCurrency(row.startingBalance)}</td>
                   <td>{formatCurrency(row.paymentAmount)}</td>
-                  <td className="cc-dim">{formatCurrency(row.interestAccrued)}</td>
+                  <td className="wm-dim">{formatCurrency(row.interestAccrued)}</td>
                   <td>{formatCurrency(row.principalPaid)}</td>
-                  <td className="cc-strong">{formatCurrency(row.endingBalance)}</td>
+                  <td className="wm-strong">{formatCurrency(row.endingBalance)}</td>
                 </tr>
               )
             })}

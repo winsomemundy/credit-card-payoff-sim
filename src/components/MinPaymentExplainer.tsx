@@ -15,10 +15,10 @@ export function MinPaymentExplainer({ result }: Props) {
   const minPayment = Math.max(25, Math.round((onePercent + row.interestAccrued) * 100) / 100)
 
   return (
-    <div className="cc-explainer">
+    <div className="wm-explainer">
       {/* Toggle link */}
       <button
-        className="cc-explainer__toggle"
+        className="wm-explainer__toggle"
         onClick={() => setOpen(o => !o)}
         aria-expanded={open}
       >
@@ -27,45 +27,45 @@ export function MinPaymentExplainer({ result }: Props) {
 
       {/* Expanded panel */}
       {open && (
-        <div className="cc-explainer__panel">
+        <div className="wm-explainer__panel">
           {/* Left: formula */}
           <div>
-            <div className="cc-explainer__label topic">Formula</div>
-            <div className="cc-explainer__text">
+            <div className="wm-explainer__label topic">Formula</div>
+            <div className="wm-explainer__text">
               Each month, the minimum is the <em>greater</em> of:
             </div>
-            <div className="cc-formula">
+            <div className="wm-formula">
               $25 floor<br />
-              <span className="cc-formula__or">— or —</span><br />
+              <span className="wm-formula__or">— or —</span><br />
               1% × balance<br />
               + monthly interest
             </div>
-            <div className="cc-explainer__note">
+            <div className="wm-explainer__note">
               Standard practice used by major US credit card issuers.
             </div>
           </div>
 
           {/* Right: live numbers */}
           <div>
-            <div className="cc-explainer__label topic">Your first payment</div>
-            <div className="cc-explainer__text wm-muted">
+            <div className="wm-explainer__label topic">Your first payment</div>
+            <div className="wm-explainer__text wm-muted">
               Based on your {formatCurrency(row.startingBalance)} opening balance
             </div>
-            <div className="cc-calc">
-              <div className="cc-calc__row">
+            <div className="wm-calc">
+              <div className="wm-calc__row">
                 <span>1% × {formatCurrency(row.startingBalance)}</span>
                 <span>{formatCurrency(onePercent)}</span>
               </div>
-              <div className="cc-calc__row">
+              <div className="wm-calc__row">
                 <span>+ interest</span>
                 <span>{formatCurrency(row.interestAccrued)}</span>
               </div>
-              <div className="cc-calc__row cc-calc__total">
+              <div className="wm-calc__row wm-calc__total">
                 <span>Min payment</span>
                 <span>{formatCurrency(minPayment)}</span>
               </div>
             </div>
-            <div className="cc-explainer__note">
+            <div className="wm-explainer__note">
               Decreases each month as your balance falls.
             </div>
           </div>
