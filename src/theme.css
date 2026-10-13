@@ -1,22 +1,8 @@
 /* Calculator-only styles. Loaded after the Winsome Mundy design system
    (@winsomemundy/design-system: tokens.css, then bundle.css), which supplies every
-   token and component class. Fonts load from Google Fonts in index.html. */
+   token, component and the Tool Page frame. Fonts load from Google Fonts in index.html. */
 
-/* page */
 html, body { margin: 0; background: var(--night); }
-.wm-surface { min-height: 100vh; }
-.wm-wrap { max-width: 860px; } /* one tool needs a narrower column than the site */
-@media (max-width: 560px) { .wm-surface { font-size: 1rem; } }
-
-/* nav: a single link back to the student tools */
-.wm-surface a.wm-nav__link { color: var(--muted); text-decoration: none; text-transform: uppercase; font-family: var(--font-body); font-size: 0.82rem; letter-spacing: 0.14em; font-weight: 400; }
-.wm-surface a.wm-nav__link:hover { color: var(--gold); }
-
-/* cards stack down the page */
-.wm-card { margin-bottom: 24px; }
-.wm-card__title { margin-bottom: var(--stack-sm); }
-.wm-card__head { margin-bottom: var(--stack-sm); }
-.wm-card__head .wm-card__title { margin: 0; }
 
 /* results row: four labeled values that stay on one row down to 680px */
 .wm-impact__cell { padding: 22px 18px; }
@@ -24,6 +10,3 @@ html, body { margin: 0; background: var(--night); }
 .wm-impact__value { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.25rem, 2.6vw, 1.6rem); line-height: 1.1; overflow-wrap: anywhere; }
 @media (max-width: 860px) { .wm-impact { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 @media (max-width: 680px) { .wm-impact { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-
-/* footer */
-.cc-footer { margin-top: 48px; padding-block: 24px; border-top: var(--hairline) solid var(--line); background: var(--ink); color: var(--muted); }

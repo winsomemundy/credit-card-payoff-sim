@@ -25,20 +25,20 @@ export default function App() {
   }
 
   return (
-    <div className="wm-surface">
+    <div className="wm-surface wm-tool-page">
       <nav className="wm-nav" aria-label="Site">
-        <div className="wm-wrap wm-nav__inner">
+        <div className="wm-wrap wm-wrap--tool wm-nav__inner">
           <a className="wm-nav__brand brand" href="https://winsomemundy.com/">Winsome <span>Mundy</span></a>
           <a className="wm-nav__link" href="https://winsomemundy.com/#tools">Student tools</a>
         </div>
       </nav>
 
-      <main className="wm-wrap" style={{ paddingBlock: '48px 0' }}>
+      <main className="wm-wrap wm-wrap--tool wm-tool-page__main">
         {/* Header */}
-        <header style={{ marginBottom: 32 }}>
+        <header className="wm-tool-header">
           <p className="wm-eyebrow eyebrow">Personal finance · Amortization</p>
           <h1 className="wm-heading heading-lg">Credit Card Payoff Simulator</h1>
-          <p className="wm-muted" style={{ margin: '10px 0 0' }}>
+          <p className="wm-tool-header__desc">
             See your full path to a zero balance.
           </p>
         </header>
@@ -74,8 +74,8 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="cc-footer caption">
-        <div className="wm-wrap">
+      <footer className="wm-tool-footer caption">
+        <div className="wm-wrap wm-wrap--tool">
           A free student tool by{' '}
           <a href="https://winsomemundy.com/#tools">Winsome Mundy</a>
           . More tools at winsomemundy.com.
