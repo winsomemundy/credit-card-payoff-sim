@@ -7,7 +7,6 @@ import { InterestSavedCallout } from './components/InterestSavedCallout'
 import { MinPaymentExplainer } from './components/MinPaymentExplainer'
 import { PayoffChart } from './components/PayoffChart'
 import { ScheduleTable } from './components/ScheduleTable'
-import { SummaryBlock } from './components/SummaryBlock'
 import { formatCurrency } from './utils/format'
 
 export default function App() {
@@ -69,7 +68,6 @@ export default function App() {
             <MinPaymentExplainer result={result} />
             <MetricStrip result={result} />
             <PayoffChart result={result} />
-            <SummaryBlock result={result} />
             <ScheduleTable rows={result.schedule} />
           </>
         )}

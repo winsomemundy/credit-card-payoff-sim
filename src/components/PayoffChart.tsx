@@ -116,20 +116,28 @@ export function PayoffChart({ result }: Props) {
         </text>
       </svg>
 
-      {/* Legend */}
+      {/* Legend: the milestone dates */}
       <div className="cc-legend">
-        {(['25%', '50%', '75%', '100%'] as const).map(flag => {
-          const m = result.milestones[flag]
-          return (
-            <div key={flag} className="cc-milestone">
-              <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
-              <span>
-                {flag} reached: {formatMilestoneDate(m.date)}
-                {m.joint && ` (with ${m.joint})`}
-              </span>
-            </div>
-          )
-        })}
+        <h3 className="cc-legend__label topic">Milestone dates</h3>
+        <div className="cc-legend__items">
+          {(['25%', '50%', '75%', '100%'] as const).map(flag => {
+            const m = result.milestones[flag]
+            return (
+              <div key={flag} className="cc-milestone">
+                <span className={flag === '100%' ? 'cc-diamond cc-diamond--payoff' : 'cc-diamond'} />
+                <span>
+                  {flag} reached: {formatMilestoneDate(m.date)}
+                  {m.joint && ` (reached together with ${m.joint})`}
+                </span>
+              </div>
+            )
+          })}
+        </div>
+        {result.newChargesNote && (
+          <p className="cc-footnote">
+            * New monthly charges extend the payoff date beyond the milestone dates shown above.
+          </p>
+        )}
       </div>
     </div>
   )
