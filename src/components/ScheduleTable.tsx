@@ -10,7 +10,7 @@ export function ScheduleTable({ rows }: Props) {
       {/* Focusable so keyboard users can scroll the table sideways on narrow screens */}
       <div className="wm-table-scroll" tabIndex={0} role="region" aria-labelledby="schedule-title">
         <table className="wm-table">
-          <caption className="sr-only">Payment schedule, one row per monthly payment</caption>
+          <caption className="wm-sr-only">Payment schedule, one row per monthly payment</caption>
           <thead>
             <tr>
               <th className="wm-left">#</th>

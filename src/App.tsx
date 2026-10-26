@@ -55,7 +55,7 @@ export default function App() {
         )}
 
         {/* Announces each new result to screen readers; it stays mounted so changes are heard */}
-        <p className="sr-only" role="status">{result ? resultSummary(result) : ''}</p>
+        <p className="wm-sr-only" role="status">{result ? resultSummary(result) : ''}</p>
 
         {/* Results */}
         {result && (
