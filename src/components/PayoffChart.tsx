@@ -1,5 +1,5 @@
 import type { SimulationResult } from '../engine/types'
-import { formatDate, formatMilestoneDate } from '../utils/format'
+import { formatCurrency, formatDate, formatMilestoneDate } from '../utils/format'
 
 interface Props { result: SimulationResult }
 
@@ -62,7 +62,8 @@ export function PayoffChart({ result }: Props) {
       <svg
         viewBox={`0 0 ${CHART_W + PAD_R} ${CHART_H}`}
         className="wm-chart"
-        aria-label="Balance over time chart"
+        role="img"
+        aria-label={`Balance over time: falls from ${formatCurrency(maxBalance)} to ${formatCurrency(payoffRow.endingBalance)} over ${totalRows} months. The payment schedule below lists every month.`}
       >
         {/* Grid lines and Y labels */}
         {yLabels.map(({ y, label, dashed }, i) => (

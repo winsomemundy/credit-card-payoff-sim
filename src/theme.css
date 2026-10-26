@@ -4,6 +4,9 @@
 
 html, body { margin: 0; background: var(--night); }
 
+/* read by screen readers, not shown */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
 /* results row: four labeled values that stay on one row down to 680px */
 .wm-impact__cell { padding: 22px 18px; }
 .wm-impact__label { display: block; margin-bottom: 6px; color: var(--gold); text-transform: uppercase; }

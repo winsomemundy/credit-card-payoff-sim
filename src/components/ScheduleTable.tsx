@@ -6,9 +6,11 @@ interface Props { rows: ScheduleRow[] }
 export function ScheduleTable({ rows }: Props) {
   return (
     <div className="wm-card">
-      <h2 className="wm-card__title heading-sm">Payment schedule</h2>
-      <div className="wm-table-scroll">
+      <h2 className="wm-card__title heading-sm" id="schedule-title">Payment schedule</h2>
+      {/* Focusable so keyboard users can scroll the table sideways on narrow screens */}
+      <div className="wm-table-scroll" tabIndex={0} role="region" aria-labelledby="schedule-title">
         <table className="wm-table">
+          <caption className="sr-only">Payment schedule, one row per monthly payment</caption>
           <thead>
             <tr>
               <th className="wm-left">#</th>

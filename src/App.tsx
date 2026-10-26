@@ -7,7 +7,7 @@ import { InterestSavedCallout } from './components/InterestSavedCallout'
 import { MinPaymentExplainer } from './components/MinPaymentExplainer'
 import { PayoffChart } from './components/PayoffChart'
 import { ScheduleTable } from './components/ScheduleTable'
-import { formatCurrency } from './utils/format'
+import { formatCurrency, formatDate } from './utils/format'
 
 export default function App() {
   const [result, setResult] = useState<SimulationResult | null>(null)
@@ -54,6 +54,9 @@ export default function App() {
           </div>
         )}
 
+        {/* Announces each new result to screen readers; it stays mounted so changes are heard */}
+        <p className="sr-only" role="status">{result ? resultSummary(result) : ''}</p>
+
         {/* Results */}
         {result && (
           <>
@@ -83,6 +86,12 @@ export default function App() {
       </footer>
     </div>
   )
+}
+
+function resultSummary(result: SimulationResult): string {
+  const interest = `Total interest ${formatCurrency(result.totalInterestPaid)}.`
+  if (result.hitSafetyCap) return `Results ready. The balance is not paid off within 50 years. ${interest}`
+  return `Results ready. Paid off in ${result.totalMonths} months, by ${formatDate(result.effectivePayoffDate)}. ${interest}`
 }
 
 function planNotes(result: SimulationResult): string[] {
