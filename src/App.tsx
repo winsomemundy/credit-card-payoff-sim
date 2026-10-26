@@ -29,7 +29,7 @@ export default function App() {
       <nav className="wm-nav" aria-label="Site">
         <div className="wm-wrap wm-wrap--tool wm-nav__inner">
           <a className="wm-nav__brand brand" href="https://winsomemundy.com/">Winsome <span>Mundy</span></a>
-          <a className="wm-nav__link" href="https://winsomemundy.com/#tools">Student tools</a>
+          <a className="wm-nav__link" href="https://winsomemundy.com/tools">Student tools</a>
         </div>
       </nav>
 
@@ -80,7 +80,7 @@ export default function App() {
       <footer className="wm-tool-footer caption">
         <div className="wm-wrap wm-wrap--tool">
           A free student tool by{' '}
-          <a href="https://winsomemundy.com/#tools">Winsome Mundy</a>
+          <a href="https://winsomemundy.com/tools">Winsome Mundy</a>
           . More tools at winsomemundy.com.
         </div>
       </footer>
